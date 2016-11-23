@@ -49,7 +49,18 @@ public class NPCBehavior : MonoBehaviour, INPCModule {
     }
 
 
-    
+    public Node NPC_RunTo(Val<Vector3> location) {
+        return new LeafInvoke(
+            () => Behavior_RunTo(location)
+        );
+    }
+
+    public Node NPC_Stop() {
+        return new LeafInvoke(
+            () => Behavior_Stop()
+        );
+    }
+
     #endregion
 
     #region Private_Functions
@@ -70,6 +81,31 @@ public class NPCBehavior : MonoBehaviour, INPCModule {
                 return RunStatus.Failure;
             }
         }
+    }
+
+    private RunStatus Behavior_RunTo(Val<Vector3> location) {
+        Vector3 val = location.Value;
+        if (g_NPCController.Body.Navigating)
+            return RunStatus.Running;
+        else if (g_NPCController.Body.IsAtTargetLocation(val)) {
+            return RunStatus.Success;
+        }
+        else {
+            try {
+                g_NPCController.RunTo(val);
+                // Debug.Log("Run To "+val);
+                return RunStatus.Running;
+            } catch(System.Exception e) {
+                // this will occur if the target is unreacheable
+                Debug.Log("Unreachable at "+val);
+                return RunStatus.Failure;
+            }
+        }
+    }
+
+    private RunStatus Behavior_Stop() {
+        g_NPCController.Body.StopNavigation();
+        return RunStatus.Success;
     }
 
     #endregion

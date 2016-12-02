@@ -61,6 +61,12 @@ public class NPCBehavior : MonoBehaviour, INPCModule {
         );
     }
 
+    public Node NPC_DoGesture(GESTURE_CODE gesture) {
+        return new LeafInvoke(
+            () => Behavior_DoGesture(gesture)
+        );
+    }
+
     #endregion
 
     #region Private_Functions
@@ -105,6 +111,14 @@ public class NPCBehavior : MonoBehaviour, INPCModule {
 
     private RunStatus Behavior_Stop() {
         g_NPCController.Body.StopNavigation();
+        return RunStatus.Success;
+    }
+
+    private RunStatus Behavior_DoGesture(GESTURE_CODE gesture) {
+        if (!g_NPCController.Body.IsGesturePlaying(gesture)) {
+            g_NPCController.Body.DoGesture(gesture);
+        }
+        // Debug.Log("gesturing");
         return RunStatus.Success;
     }
 

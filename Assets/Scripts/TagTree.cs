@@ -20,26 +20,22 @@ public class TagTree : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 		ba = new BehaviorAgent(this.BuildTreeRoot());
+		ba2 = new BehaviorAgent(this.BuildTreeRoot2());
 		BehaviorManager.Instance.Register(ba);
-		// BehaviorManager.Instance.Register(ba2);
+		BehaviorManager.Instance.Register(ba2);
 		ba.StartBehavior();
 		on = true;
 	}
 	
-	// Update is called once per frame
 	void Update() {
 		if (Input.GetKeyUp(KeyCode.Space)) {
 			Debug.Log("Swap");
 			if (on) {
-				ba2 = new BehaviorAgent(this.BuildTreeRoot2());
-				BehaviorManager.Instance.ClearReceivers();
-				BehaviorManager.Instance.Register(ba2);
+				ba.StopBehavior();
 				ba2.StartBehavior();
 			}
 			else {
-				ba = new BehaviorAgent(this.BuildTreeRoot());
-				BehaviorManager.Instance.ClearReceivers();
-				BehaviorManager.Instance.Register(ba);
+				ba2.StopBehavior();
 				ba.StartBehavior();
 			}
 			on = !on;
